@@ -1,16 +1,40 @@
 import joi from 'joi';
+import { generalFields } from '../../middleware/validation.middleware.js';
 
-export const login = joi.object().keys({
+export const login = {
+    body: joi.object().keys({
   
-    email: joi.string().email({ minDomainSegments: 1, maxDomainSegments: 3, tlds: { allow: ['net', 'com', 'edu'] } }).required(),
-    password: joi.string().pattern(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)).required(),
+        email: generalFields.email.required(),
+        password: generalFields.password.required(),
     
-}).required().options({ allowUnknown: false });
+    }).required().options({ allowUnknown: false })
+};
 
-export const signup = login.append({
-    // fullName: joi.string().empty().default("JON DOE"),
-    fullName: joi.string().min(2).max(20).required(),
-    phone: joi.string().pattern(new RegExp(/^(002|\+2)?01[0125][0-9]{8}$/)).required(),
-    confirmPassword: joi.string().valid(joi.ref("password")).required(),
+export const signup = {
+    body: login.body.append({
+        // fullName: joi.string().empty().default("JON DOE"),
+        fullName: generalFields.fullName.required(),
+        phone: generalFields.phone.required(),
+        confirmPassword: generalFields.confirmPassword.required(),
     
-}).required().options({ allowUnknown: false });
+    }).required().options({ allowUnknown: false }),
+    
+    // query: joi.object().keys({
+    //     lang: joi.string().valid('ar', 'en').required()
+    // }).required().options({ allowUnknown: false })
+
+};
+
+export const confirmEmail = {
+    body: joi.object().keys({
+        email: generalFields.email.required(),
+        otp: generalFields.otp.required()
+    }).required().options({ allowUnknown: false }),
+  
+};
+
+export const loginWithGmail = {
+    body: joi.object().keys({
+        idToken: joi.string().required()
+    }).required().options({ allowUnknown: false }),
+};

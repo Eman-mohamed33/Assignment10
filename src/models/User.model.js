@@ -1,5 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Types } from "mongoose";
 import { type } from "os";
+import { ref } from "process";
 
 export let genderEnum = { male: "male", female: "female" };
 export let roleEnum = { user: "User", admin: "Admin" };
@@ -56,8 +57,25 @@ const userSchema = new mongoose.Schema({
         default: providerEnum.system
     },
     confirmEmail: Date,
-    confirmEmailOtp: String,
-    picture: String
+    confirmEmailOtp: {
+        type: String,
+        
+    },
+    forgotPasswordOtp: String,
+    picture: String,
+    deletedAt: Date,
+    deletedBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    restoredAt: Date,
+    restoredBy: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    },
+    oldPasswords: [String],
+    changeCredentialsTime: Date,
+
 },
     {
         timestamps: true,

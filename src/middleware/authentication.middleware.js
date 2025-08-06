@@ -4,7 +4,9 @@ import { decodedToken, tokenTypeEnum } from "../utils/security/token.security.js
 
 export const authentication = ({ tokenType = tokenTypeEnum.access } = {}) => {
     return asyncHandler(async (req, res, next) => {
-        req.user = await decodedToken({ authorization: req.headers.authorization, next, tokenType });
+        const { user, decoded } = await decodedToken({ authorization: req.headers.authorization, next, tokenType }) || {};
+        req.user = user;
+        req.decoded = decoded;
         return next();
     })
 
@@ -23,12 +25,13 @@ export const authorization = ({ accessRoles = [] } = {}) => {
 
 export const auth = ({ accessRoles = [] } = {}) => {
     return asyncHandler(async (req, res, next) => {
-        req.user = await decodedToken({ authorization: req.headers.authorization, next });
-        console.log({ accessRoles, currentRole: req.user.role, match: accessRoles.includes(req.user.role) });
+        const { user, decoded } = await decodedToken({ authorization: req.headers.authorization, next }) || {};
+        req.user = user;
+        req.decoded = decoded;
         if (!accessRoles.includes(req.user.role)) {
             return next(new Error("Not Authorized Account", { cause: 403 }));
         }
         return next();
     })
 
-};
+}; 

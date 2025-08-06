@@ -3,7 +3,7 @@ import path from 'node:path';
 dotenv.config({ path: path.join("./src/config/.env.dev") });
 console.log(process.env.PORT);
 console.log(process.env.DB_URL);
-
+import { job } from './utils/Delete.ExpiredTokens.js';
 import express from "express";
 import { connectDB } from "./DB/connection.db.js";
 import authController from "./modules/auth/auth.controller.js";
@@ -14,13 +14,15 @@ import { globalErrorHandling } from "./utils/response.js";
 async function bootstrap() {
     const app = express();
     const port = process.env.PORT || 5000;
-
+   
     app.use(cors());
     
     // DB
     await connectDB();
 
-
+    // upload files
+    app.use("/uploads", express.static(path.resolve("./src/uploads")));
+    
     // Convert Json Buffer
     app.use(express.json());
     

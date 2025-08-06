@@ -14,3 +14,12 @@ export const create = async ({ model, data = [{}], options = {} } = {}) => {
 export const updateOne = async ({ model, filter = {}, newData = {}, options = { runValidators: true } } = {}) => {
     return await model.updateOne(filter, newData, options);
 };
+
+export const findOneAndUpdate = async ({
+    model, filter = {}, data = {}, select = "", populate = [], options = { runValidators: true, new: true } } = {}) => {
+    return await model.findOneAndUpdate(filter, { ...data, $inc: { __v: 1 }, options }).select(select).populate(populate);
+};
+
+export const deleteOne = async ({ model, filter = {} } = {}) => {
+    return await model.deleteOne(filter);
+};

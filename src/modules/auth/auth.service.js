@@ -87,6 +87,10 @@ export const login = asyncHandler(async (req, res, next) => {
     }
     if (!user.confirmEmail) {
         return next(new Error("Please verify Your Account First"));
+    } 
+
+    if (user.deletedAt) {
+        return next(new Error("This Account is Deleted", { cause: 404 }));
     }
     const match = await compareHash({ plainText: password, hashValue: user.password });
     console.log({ plainText: password, hashValue: user.password, match });
